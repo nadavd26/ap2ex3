@@ -1,11 +1,14 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +20,8 @@ import com.example.myapplication.adapters.ContactItemAdapter;
 import com.example.myapplication.api.API;
 import com.example.myapplication.api.ContactServer;
 import com.example.myapplication.elements.ContactItem;
+import com.example.myapplication.room.AppDB;
+import com.example.myapplication.room.ContactDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.os.Bundle;
 import java.util.ArrayList;
@@ -36,6 +41,9 @@ public class ContactList extends AppCompatActivity {
     private String profilePic;
     private API api;
 
+    private AppDB db;
+
+    private ContactDao contactDao;
     ImageView chatOwnerProfilePic;
 
     private  Callback<List<ContactServer>> contactsCallback;
@@ -56,17 +64,17 @@ public class ContactList extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
         api = new API();
 
-
-
         contacts = new ArrayList<>();
         Intent currentIntent = getIntent();
         username = currentIntent.getStringExtra("username");
+        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, username)
+                .build();
+        contactDao = db.contactDao();
         displayName = currentIntent.getStringExtra("displayName");
         token = currentIntent.getStringExtra("token");
         profilePic = currentIntent.getStringExtra("profilePic");
@@ -84,6 +92,7 @@ public class ContactList extends AppCompatActivity {
                 contacts.clear();
                 contacts.addAll(convertToContactItemList(response.body()));
                 contactAdapter.notifyDataSetChanged();
+                int a;
             }
 
             @Override
@@ -92,7 +101,22 @@ public class ContactList extends AppCompatActivity {
             }
         };
 
-        api.getContactList(token, contactsCallback);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ContactItem> updatedContacts = contactDao.index();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        contacts.clear();
+                        contacts.addAll(updatedContacts);
+                        contactAdapter.notifyDataSetChanged();
+                    }
+                });
+
+                api.getContactList(token, contactsCallback);
+            }
+        }).start();
 
         contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -110,6 +134,7 @@ public class ContactList extends AppCompatActivity {
         addChat.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), AddContact.class);
             intent.putExtra("token", token);
+            intent.putExtra("owner", username);
             startActivity(intent);
         });
     }
@@ -117,6 +142,21 @@ public class ContactList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        api.getContactList(token, contactsCallback);
+        // Define a Handler instance
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ContactItem> updatedContacts = contactDao.index();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        contacts.clear();
+                        contacts.addAll(updatedContacts);
+                        contactAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }).start();
+
     }
 }

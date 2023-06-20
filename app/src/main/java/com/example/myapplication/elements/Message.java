@@ -1,17 +1,46 @@
 package com.example.myapplication.elements;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Message {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String date;
+
+    private int chatId;
     private String content;
     private boolean me;
 
-    public Message() {
+    public void setMe(boolean me) {
+        this.me = me;
     }
 
-    public Message(String date, String content, boolean me) {
+    public Message() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
+    }
+
+    public Message(String date, String content, boolean me, int chatId) {
         this.date = date;
         this.content = content;
         this.me = me;
+        this.chatId = chatId;
     }
 
 

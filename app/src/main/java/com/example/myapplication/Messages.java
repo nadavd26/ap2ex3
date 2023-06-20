@@ -32,7 +32,7 @@ public class Messages extends AppCompatActivity {
         for (int i = messageServerList.size() - 1; i >= 0; i--) {
             MessageServer messageServer = messageServerList.get(i);
             boolean me = messageServer.getSender().getUsername().equals(username);
-            Message message = new Message(messageServer.getCreated(), messageServer.getContent(), me);
+            Message message = new Message(messageServer.getCreated(), messageServer.getContent(), me, 0);
             messageList.add(message);
         }
         return messageList;
@@ -52,6 +52,7 @@ public class Messages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
         api = new API();
+        int daoId = getIntent().getIntExtra("daoId", 0);
         String id = getIntent().getStringExtra("id");
         String token = getIntent().getStringExtra("token");
         String username = getIntent().getStringExtra("username");
@@ -85,7 +86,8 @@ public class Messages extends AppCompatActivity {
                 public void onResponse(Call<MessageServer> call, Response<MessageServer> response) {
                     Message message = new Message(response.body().getCreated(),
                             response.body().getContent(),
-                            true);
+                            true,
+                            daoId);
                     messages.add(message);
                     messageAdapter.notifyDataSetChanged();
                     scrollDown();
