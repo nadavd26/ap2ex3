@@ -13,6 +13,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -24,6 +25,8 @@ import com.example.myapplication.room.AppDB;
 import com.example.myapplication.room.ContactDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.os.Bundle;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +48,8 @@ public class ContactList extends AppCompatActivity {
 
     private ContactDao contactDao;
     ImageView chatOwnerProfilePic;
+
+    TextView chatOwnerDisplayName;
 
     private  Callback<List<ContactServer>> contactsCallback;
     private List<ContactItem> convertToContactItemList(List<ContactServer> contactServers) {
@@ -85,6 +90,12 @@ public class ContactList extends AppCompatActivity {
         byte[] decodedString = Base64.decode(profilePic, Base64.DEFAULT);
         Bitmap profilePicBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         chatOwnerProfilePic.setImageBitmap(profilePicBitmap);
+        chatOwnerDisplayName = findViewById(R.id.contact_item_chat_owner_display_name);
+        chatOwnerDisplayName.setText(displayName);
+        ImageButton logout = findViewById(R.id.logout);
+        logout.setOnClickListener( l -> {
+            finish();
+        });
 
         contactsCallback = new Callback<List<ContactServer>>() {
             @Override
@@ -126,6 +137,7 @@ public class ContactList extends AppCompatActivity {
                 intent.putExtra("token", token);
                 intent.putExtra("id", contactItem.getChatId());
                 intent.putExtra("username", username);
+                intent.putExtra("daoID", i);
                 startActivity(intent);
             }
         });
