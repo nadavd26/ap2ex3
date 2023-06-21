@@ -40,7 +40,7 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        api = new API();
+        api = API.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 

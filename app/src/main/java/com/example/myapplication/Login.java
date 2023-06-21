@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        api = new API();
+        api = API.getInstance();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {}

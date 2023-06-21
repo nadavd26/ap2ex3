@@ -51,6 +51,8 @@ public class ContactList extends AppCompatActivity {
 
     TextView chatOwnerDisplayName;
 
+    ImageButton settings;
+
     private  Callback<List<ContactServer>> contactsCallback;
 
     private String goodLookingDate(String serverDate) {
@@ -77,15 +79,18 @@ public class ContactList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
-
-        api = new API();
-
+        api = API.getInstance();
         contacts = new ArrayList<>();
         Intent currentIntent = getIntent();
         username = currentIntent.getStringExtra("username");
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, username)
                 .build();
         contactDao = db.contactDao();
+        settings = findViewById(R.id.contact_list_settings);
+        settings.setOnClickListener(view -> {
+            Intent intent = new Intent(this, Settings.class);
+            startActivity(intent);
+        });
         displayName = currentIntent.getStringExtra("displayName");
         token = currentIntent.getStringExtra("token");
         profilePic = currentIntent.getStringExtra("profilePic");
@@ -102,6 +107,8 @@ public class ContactList extends AppCompatActivity {
         logout.setOnClickListener( l -> {
             finish();
         });
+
+
 
         contactsCallback = new Callback<List<ContactServer>>() {
             @Override

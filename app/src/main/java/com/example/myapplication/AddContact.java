@@ -32,7 +32,7 @@ public class AddContact extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
-        api = new API();
+        api = API.getInstance();
         String owner = getIntent().getStringExtra("owner");
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, owner)
                 .build();

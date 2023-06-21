@@ -71,7 +71,7 @@ public class Messages extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-        api = new API();
+        api = API.getInstance();
         int daoID = getIntent().getIntExtra("daoID", 0);
         String id = getIntent().getStringExtra("id");
         String token = getIntent().getStringExtra("token");
