@@ -52,10 +52,16 @@ public class ContactList extends AppCompatActivity {
     TextView chatOwnerDisplayName;
 
     private  Callback<List<ContactServer>> contactsCallback;
+
+    private String goodLookingDate(String serverDate) {
+        String date1 = serverDate.substring(0, 10);
+        String date2 = serverDate.substring(11, 16);
+        return  date1 + " " + date2 ;
+    }
     private List<ContactItem> convertToContactItemList(List<ContactServer> contactServers) {
         List<ContactItem> contactItems = new ArrayList<ContactItem>();
         for (ContactServer contactServer : contactServers) {
-            String created = contactServer.getLastMessage() == null? "": contactServer.getLastMessage().getCreated();
+            String created = contactServer.getLastMessage() == null? "": goodLookingDate(contactServer.getLastMessage().getCreated());
             String content = contactServer.getLastMessage() == null? "": contactServer.getLastMessage().getContent();
             ContactItem contactItem = new ContactItem(contactServer.getId(),
                     created,
@@ -101,9 +107,19 @@ public class ContactList extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<ContactServer>> call, Response<List<ContactServer>> response) {
                 contacts.clear();
-                contacts.addAll(convertToContactItemList(response.body()));
+                List<ContactItem> contactItems = convertToContactItemList(response.body());
+                contacts.addAll(contactItems);
                 contactAdapter.notifyDataSetChanged();
-                int a;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //update contact dao to match server
+                        contactDao.deleteAll();
+                        for (ContactItem contactItem: contactItems) {
+                            contactDao.insert(contactItem);
+                        }
+                    }
+                }).start();
             }
 
             @Override
@@ -169,6 +185,5 @@ public class ContactList extends AppCompatActivity {
                 });
             }
         }).start();
-
     }
 }

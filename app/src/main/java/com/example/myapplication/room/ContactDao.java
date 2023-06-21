@@ -19,11 +19,14 @@ public interface ContactDao {
     ContactItem get(int id);
 
     @Insert
-    void insert(ContactItem... contactDaoElements);
+    void insert(ContactItem... contactItems);
 
     @Update
-    void update(ContactItem... contactDaoElements);
+    void update(ContactItem... contactItems);
 
     @Delete
-    void delete(ContactItem... contactDaoElements);
+    void delete(ContactItem... contactItems);
+
+    @Query("DELETE FROM contactitem")
+    void deleteAll();
 }

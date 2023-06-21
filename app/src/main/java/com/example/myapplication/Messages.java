@@ -39,12 +39,19 @@ public class Messages extends AppCompatActivity {
 
     private MessageDao messageDao;
 
+    private String goodLookingDate(String serverDate) {
+        String date1 = serverDate.substring(0, 10);
+        String date2 = serverDate.substring(11, 16);
+        return  date1 + " " + date2 ;
+    }
+
     private List<Message> serverMessagesToMessages(List<MessageServer> messageServerList, String username) {
         List<Message> messageList = new ArrayList<>();
         for (int i = messageServerList.size() - 1; i >= 0; i--) {
             MessageServer messageServer = messageServerList.get(i);
             boolean me = messageServer.getSender().getUsername().equals(username);
-            Message message = new Message(messageServer.getCreated(), messageServer.getContent(), me, 0);
+            String id = messageServer.getId();
+            Message message = new Message(goodLookingDate(messageServer.getCreated()), messageServer.getContent(), me, Integer.parseInt(id));
             messageList.add(message);
         }
         return messageList;
@@ -82,8 +89,19 @@ public class Messages extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<MessageServer>> call, Response<List<MessageServer>> response) {
                 messages.clear();
-                messages.addAll(serverMessagesToMessages(response.body(), username));
+                List<Message> messageList = serverMessagesToMessages(response.body(), username);
+                messages.addAll(messageList);
                 messageAdapter.notifyDataSetChanged();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //update message dao to match server
+                        messageDao.deleteAll();
+                        for (Message message: messageList) {
+                            messageDao.insert(message);
+                        }
+                    }
+                }).start();
             }
 
             @Override
@@ -117,7 +135,7 @@ public class Messages extends AppCompatActivity {
             Callback<MessageServer> sendMessageCallback = new Callback<MessageServer>() {
                 @Override
                 public void onResponse(Call<MessageServer> call, Response<MessageServer> response) {
-                    Message message = new Message(response.body().getCreated(),
+                    Message message = new Message(goodLookingDate(response.body().getCreated()),
                             response.body().getContent(),
                             true,
                             Integer.parseInt(id));
