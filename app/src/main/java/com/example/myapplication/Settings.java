@@ -32,8 +32,14 @@ public class Settings extends AppCompatActivity {
         modeButton = findViewById(R.id.settings_mode_button);
         ipEt = findViewById(R.id.settings_ip);
         mode = Mode.LIGHT;
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String baseUrl = sharedPreferences.getString("serverIP", "");
+        ipEt.setText(baseUrl);
         submitButton.setOnClickListener(view -> {
             String updatedServerUrl = ipEt.getText().toString();
+            SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+            editor.putString("serverIP", updatedServerUrl);
+            editor.apply();
             api.setBaseUrl(updatedServerUrl);
             finish();
         });

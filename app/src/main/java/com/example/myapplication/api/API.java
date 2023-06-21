@@ -1,6 +1,7 @@
 package com.example.myapplication.api;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.example.myapplication.ContactList;
 import com.example.myapplication.MainActivity;
@@ -24,7 +25,8 @@ public class API {
 
     private static API instance = null;
     private API() {
-        baseUrl = "http://10.0.2.2:5000/api/";
+        SharedPreferences sharedPreferences = MainActivity.context.getSharedPreferences("MyPrefs", MainActivity.context.MODE_PRIVATE);
+        baseUrl = sharedPreferences.getString("serverIP", "");
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
