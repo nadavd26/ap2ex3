@@ -33,6 +33,8 @@ public interface MessageDao {
     @Query("DELETE FROM message")
     void deleteAll();
 
+    @Query("SELECT COUNT(*) FROM message")
+    int getSize();
 }
 
 

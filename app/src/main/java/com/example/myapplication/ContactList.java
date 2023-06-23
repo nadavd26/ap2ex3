@@ -148,6 +148,9 @@ public class ContactList extends AppCompatActivity {
                     }
                 });
 
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {}
                 api.getContactList(token, contactsCallback);
             }
         }).start();

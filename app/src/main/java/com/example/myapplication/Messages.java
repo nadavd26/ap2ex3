@@ -32,6 +32,7 @@ public class Messages extends AppCompatActivity {
     private ListView messagesList;
     private MessageAdapter messageAdapter;
 
+    private int daoID;
 
     private AppDB db;
 
@@ -51,7 +52,7 @@ public class Messages extends AppCompatActivity {
             MessageServer messageServer = messageServerList.get(i);
             boolean me = messageServer.getSender().getUsername().equals(username);
             String id = messageServer.getId();
-            Message message = new Message(goodLookingDate(messageServer.getCreated()), messageServer.getContent(), me, Integer.parseInt(id));
+            Message message = new Message(goodLookingDate(messageServer.getCreated()), messageServer.getContent(), me, daoID);
             messageList.add(message);
         }
         return messageList;
@@ -72,7 +73,7 @@ public class Messages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
         api = API.getInstance();
-        int daoID = getIntent().getIntExtra("daoID", 0);
+        daoID = getIntent().getIntExtra("daoID", 0);
         String id = getIntent().getStringExtra("id");
         String token = getIntent().getStringExtra("token");
         String username = getIntent().getStringExtra("username");
@@ -95,8 +96,13 @@ public class Messages extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        //update message dao to match server
-                        messageDao.deleteAll();
+                        List<Message> daoIndex = messageDao.index();
+                        for (Message message:daoIndex) {
+                            if (message.getChatId() == daoID) {
+                                    messageDao.delete(message);
+                            }
+                        }
+
                         for (Message message: messageList) {
                             messageDao.insert(message);
                         }
@@ -112,7 +118,7 @@ public class Messages extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Message> updatedMessages = messageDao.getMessageList(Integer.parseInt(id));
+                List<Message> updatedMessages = messageDao.getMessageList(daoID);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -122,6 +128,9 @@ public class Messages extends AppCompatActivity {
                     }
                 });
 
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {}
                 api.getMessages(token, id, messagesServerCallback);
             }
         }).start();
@@ -138,7 +147,7 @@ public class Messages extends AppCompatActivity {
                     Message message = new Message(goodLookingDate(response.body().getCreated()),
                             response.body().getContent(),
                             true,
-                            Integer.parseInt(id));
+                            daoID);
                     messages.add(message);
                     new Thread(new Runnable() {
                         @Override
