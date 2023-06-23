@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:background="@drawable/light_background">
+    android:background="@drawable/dark_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Username"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
+            android:textColor="@color/design_default_color_background"
+            android:textColorHint="@color/design_default_color_background"
             android:minHeight="48dp"/>
 
         <Button

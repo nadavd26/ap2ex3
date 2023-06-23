@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -13,14 +14,6 @@ public class Settings extends AppCompatActivity {
     private AppCompatButton submitButton;
     private AppCompatButton modeButton;
     private EditText ipEt;
-
-    private enum Mode {
-        LIGHT,
-        DARK
-    }
-
-    private Mode mode;
-
     private API api;
 
     @Override
@@ -31,27 +24,36 @@ public class Settings extends AppCompatActivity {
         submitButton = findViewById(R.id.settings_submit_button);
         modeButton = findViewById(R.id.settings_mode_button);
         ipEt = findViewById(R.id.settings_ip);
-        mode = Mode.LIGHT;
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
         String baseUrl = sharedPreferences.getString("serverIP", "");
+        final String[] mode = {sharedPreferences.getString("mode", "LIGHT")};
         ipEt.setText(baseUrl);
         submitButton.setOnClickListener(view -> {
             String updatedServerUrl = ipEt.getText().toString();
-            SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
             editor.putString("serverIP", updatedServerUrl);
+            editor.putString("mode", mode[0]);
             editor.apply();
             api.setBaseUrl(updatedServerUrl);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
             finish();
         });
 
+        if (mode[0].equals("LIGHT")) {
+            modeButton.setText("Light mode");
+        } else {
+            modeButton.setText("Dark mode");
+        }
         modeButton.setOnClickListener(view -> {
-            if (mode == Mode.LIGHT) {
-                mode = Mode.DARK;
+            if (mode[0].equals("LIGHT")) {
+                mode[0] = "DARK";
                 modeButton.setText("Dark mode");
             } else {
-                mode = Mode.LIGHT;
+                mode[0] = "LIGHT";
                 modeButton.setText("Light mode");
-            }
+           }
+            editor.apply();
         });
     }
 }
