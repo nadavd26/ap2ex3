@@ -54,7 +54,7 @@ public class AddContact extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     try {
-                                        contactDao.insert(new ContactItem(addChat.getId(),
+                                        contactDao.insert(new ContactItem(Integer.parseInt(addChat.getId()),
                                                 "",
                                                 "",
                                                 displayName,

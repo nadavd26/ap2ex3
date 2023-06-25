@@ -14,6 +14,13 @@ public class Message {
     private String content;
     private boolean me;
 
+    public Message(String date, int chatId, String content, boolean me) {
+        this.date = date;
+        this.chatId = chatId;
+        this.content = content;
+        this.me = me;
+    }
+
     public void setMe(boolean me) {
         this.me = me;
     }
@@ -35,14 +42,6 @@ public class Message {
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
-
-    public Message(String date, String content, boolean me, int chatId) {
-        this.date = date;
-        this.content = content;
-        this.me = me;
-        this.chatId = chatId;
-    }
-
 
     public String getDate() {
         return date;

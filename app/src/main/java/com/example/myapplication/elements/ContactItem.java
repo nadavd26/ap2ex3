@@ -13,28 +13,22 @@ import com.example.myapplication.R;
 
 @Entity
 public class ContactItem {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
-    private String chatId;
     private String date;
     private String lastMessage;
     private String displayName;
     private String profilePic;
 
-    public ContactItem(String chatId, String date, String lastMessage, String displayName, String profilePic) {
+    public ContactItem() {
+    }
+
+    public ContactItem(int id, String date, String lastMessage, String displayName, String profilePic) {
         this.date = date;
-        this.chatId = chatId;
+        this.id = id;
         this.lastMessage = lastMessage;
         this.displayName = displayName;
         this.profilePic = profilePic;
-    }
-
-    public String getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
     }
 
     public void setLastMessage(String lastMessage) {

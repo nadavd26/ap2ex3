@@ -32,7 +32,7 @@ public class Messages extends AppCompatActivity {
     private ListView messagesList;
     private MessageAdapter messageAdapter;
 
-    private int daoID;
+    private int chatId;
 
     private AppDB db;
 
@@ -52,7 +52,10 @@ public class Messages extends AppCompatActivity {
             MessageServer messageServer = messageServerList.get(i);
             boolean me = messageServer.getSender().getUsername().equals(username);
             String id = messageServer.getId();
-            Message message = new Message(goodLookingDate(messageServer.getCreated()), messageServer.getContent(), me, daoID);
+            Message message = new Message(goodLookingDate(messageServer.getCreated()),
+                    chatId,
+                    messageServer.getContent(),
+                    me);
             messageList.add(message);
         }
         return messageList;
@@ -73,8 +76,7 @@ public class Messages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
         api = API.getInstance();
-        daoID = getIntent().getIntExtra("daoID", 0);
-        String id = getIntent().getStringExtra("id");
+        chatId = getIntent().getIntExtra("chatId", 0);
         String token = getIntent().getStringExtra("token");
         String username = getIntent().getStringExtra("username");
         messagesList = findViewById(R.id.messages_list);
@@ -98,7 +100,7 @@ public class Messages extends AppCompatActivity {
                     public void run() {
                         List<Message> daoIndex = messageDao.index();
                         for (Message message:daoIndex) {
-                            if (message.getChatId() == daoID) {
+                            if (message.getChatId() == chatId) {
                                     messageDao.delete(message);
                             }
                         }
@@ -118,7 +120,7 @@ public class Messages extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Message> updatedMessages = messageDao.getMessageList(daoID);
+                List<Message> updatedMessages = messageDao.getMessageList(chatId);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -131,7 +133,7 @@ public class Messages extends AppCompatActivity {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {}
-                api.getMessages(token, id, messagesServerCallback);
+                api.getMessages(token, String.valueOf(chatId), messagesServerCallback);
             }
         }).start();
         AppCompatButton sendButton = findViewById(R.id.messages_button_send);
@@ -145,18 +147,25 @@ public class Messages extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MessageServer> call, Response<MessageServer> response) {
                     Message message = new Message(goodLookingDate(response.body().getCreated()),
+                            chatId,
                             response.body().getContent(),
-                            true,
-                            daoID);
+                            true);
                     messages.add(message);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             messageDao.insert(message);
                             List<ContactItem> currentContact = contactDao.index();
-                            currentContact.get(daoID).setLastMessage(message.getContent());
-                            currentContact.get(daoID).setDate(message.getDate());
-                            contactDao.update(currentContact.get(daoID));
+                            //find contact of chatId
+                            ContactItem currentContactItem = new ContactItem();
+                            for (ContactItem contactItem : currentContact) {
+                                if (contactItem.getId() == chatId) {
+                                    currentContactItem = contactItem;
+                                }
+                            }
+                            currentContactItem.setLastMessage(message.getContent());
+                            currentContactItem.setDate(message.getDate());
+                            contactDao.update(currentContactItem);
                         }
                     }).start();
                     messageAdapter.notifyDataSetChanged();
@@ -167,7 +176,7 @@ public class Messages extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<MessageServer> call, Throwable t) {}
             };
-            api.sendMessage(token, id, et.getText().toString(), sendMessageCallback);
+            api.sendMessage(token, String.valueOf(chatId), et.getText().toString(), sendMessageCallback);
             et.setText("");
         });
 

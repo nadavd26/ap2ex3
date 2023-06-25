@@ -65,7 +65,7 @@ public class ContactList extends AppCompatActivity {
         for (ContactServer contactServer : contactServers) {
             String created = contactServer.getLastMessage() == null? "": goodLookingDate(contactServer.getLastMessage().getCreated());
             String content = contactServer.getLastMessage() == null? "": contactServer.getLastMessage().getContent();
-            ContactItem contactItem = new ContactItem(contactServer.getId(),
+            ContactItem contactItem = new ContactItem(Integer.parseInt(contactServer.getId()),
                     created,
                     content,
                     contactServer.getUser().getDisplayName(),
@@ -149,7 +149,7 @@ public class ContactList extends AppCompatActivity {
                 });
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (Exception e) {}
                 api.getContactList(token, contactsCallback);
             }
@@ -161,9 +161,8 @@ public class ContactList extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), Messages.class);
                 ContactItem contactItem = contacts.get(i);
                 intent.putExtra("token", token);
-                intent.putExtra("id", contactItem.getChatId());
+                intent.putExtra("chatId", contactItem.getId());
                 intent.putExtra("username", username);
-                intent.putExtra("daoID", i);
                 startActivity(intent);
             }
         });
