@@ -26,7 +26,13 @@ public class API {
     private static API instance = null;
     private API() {
         SharedPreferences sharedPreferences = MainActivity.context.getSharedPreferences("MyPrefs", MainActivity.context.MODE_PRIVATE);
-        baseUrl = sharedPreferences.getString("serverIP", "");
+        baseUrl = sharedPreferences.getString("serverIP", "http://10.0.2.2:5000/api/");
+        if(baseUrl.equals("")){
+            SharedPreferences.Editor editor = MainActivity.context.getSharedPreferences("MyPrefs", MainActivity.context.MODE_PRIVATE).edit();
+            editor.putString("serverIP", "http://10.0.2.2:5000/api/");
+            editor.apply();
+            baseUrl = "http://10.0.2.2:5000/api/";
+        }
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())

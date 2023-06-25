@@ -26,7 +26,7 @@ public class Settings extends AppCompatActivity {
         ipEt = findViewById(R.id.settings_ip);
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
-        String baseUrl = sharedPreferences.getString("serverIP", "");
+        String baseUrl = sharedPreferences.getString("serverIP", "http://10.0.2.2:5000/api/");
         final String[] mode = {sharedPreferences.getString("mode", "LIGHT")};
         ipEt.setText(baseUrl);
         submitButton.setOnClickListener(view -> {

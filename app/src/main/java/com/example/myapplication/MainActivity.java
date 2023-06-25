@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_login);
         editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-        context = this;
         Intent intent = new Intent(MainActivity.this, Login.class);
         startActivity(intent);
     }
