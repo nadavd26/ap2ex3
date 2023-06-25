@@ -21,6 +21,10 @@ async function createToken(req, res) {
         const data = { username: username, password: password }
         // Generate the token.
         const token = jwt.sign(data, key)
+        if(req.body.hasOwnProperty("fireBaseToken")){
+            const resp = await User.updateOne({ username: username }, { $set: { fireBaseToken: req.body.fireBaseToken } });
+            // console.log(resp)
+        }
         return res.status(200).json(token);
     } catch (error) {
         return res.status(500).send('Failed to create token' );

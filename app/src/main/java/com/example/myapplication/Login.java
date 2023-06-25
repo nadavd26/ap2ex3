@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 
 import com.example.myapplication.api.API;
 import com.example.myapplication.api.User;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -79,7 +80,10 @@ public class Login extends AppCompatActivity {
                 }
             };
 
-            api.getToken(username, password, tokenCallback);
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, instanceIdResult -> {
+                final String newToken = instanceIdResult.getToken();
+                api.getToken(username, password, newToken, tokenCallback);
+            });
         });
 
         AppCompatButton linkToRegister = findViewById(R.id.login_link_to_register);

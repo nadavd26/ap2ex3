@@ -21,6 +21,9 @@ import android.content.DialogInterface;
 import android.widget.ImageView;
 
 import com.example.myapplication.api.API;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,6 +65,7 @@ public class Register extends AppCompatActivity {
 
         AppCompatButton registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(view -> {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -114,7 +118,6 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-
             EditText usernameEt = findViewById(R.id.register_username_edittext);
             String username = usernameEt.getText().toString();
             EditText passwordEt = findViewById(R.id.register_password_edittext);
@@ -152,8 +155,10 @@ public class Register extends AppCompatActivity {
                                 int a = 1;
                             }
                         };
-
-                        api.getToken(username, password, stringCallback);
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Register.this, instanceIdResult -> {
+                            final String newToken = instanceIdResult.getToken();
+                            api.getToken(username, password, newToken, stringCallback);
+                        });
                     }
                 }
                 @Override

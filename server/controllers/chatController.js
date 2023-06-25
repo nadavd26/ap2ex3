@@ -2,6 +2,13 @@ const { verifyToken } = require('./tokenController');
 const Chat = require('../models/chatModel');
 const User = require('../models/userModel');
 const io = global.io
+const admin = require('firebase-admin');
+
+var serviceAccount = require("../serviceAccountKey.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 // //for io
 // const express = require('express');
 // const app = express();
@@ -30,6 +37,34 @@ function usersSocketsRemove(socket) {
     }
 }
 
+async function sendToFireBase(reciever, sender, message, chatID) {
+    console.log("1");
+    const recieverUser = await User.findOne({ username: reciever });
+    const fireBaseToken = recieverUser.fireBaseToken;
+    if (fireBaseToken === "") {
+        return;
+    }
+    let title = "message from: " + sender;
+    const fireBaseMessage = {
+        notification: {
+            title: title,
+            body: message
+        },
+        token: fireBaseToken,
+        data: {
+            chatID: chatID
+        }
+    };
+    console.log(fireBaseMessage)
+    admin
+        .messaging()
+        .send(fireBaseMessage)
+        .then((response) => {console.log(response)})
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 async function getNextChatId() {
     try {
         const allChats = await Chat.find();
@@ -55,6 +90,7 @@ function getNextMessageId(messages) {
 }
 
 async function createMessage(req, res) {
+    console.log("create")
     if (!(req.body.hasOwnProperty('msg') &&
         req.params.hasOwnProperty('id'))) {
         return res.status(400).json({ title: 'One or more validation errors occurred.' });
@@ -96,10 +132,12 @@ async function createMessage(req, res) {
     const recieverSocket = userEntry ? userEntry.socket : null;
     if (recieverSocket === null) {
         //the reciever is not connected
+        const resu = await sendToFireBase(reciever_username, jsonSender.username, msg, id)
         return res.status(200).json(updatedChat.messages[messageId]);
     }
 
     io.to(recieverSocket.id).emit('message', { "sender": sender.username, "id": id })
+    const resu = await sendToFireBase(reciever_username, jsonSender.username, msg, id)
     return res.status(200).json(updatedChat.messages[messageId]);
 }
 
@@ -138,7 +176,7 @@ async function createChat(req, res) {
         users.push(jsonUser2)
         var messages = []
         await Chat.create({ id, users, messages });
-        const response = {id: id, user:jsonUser2}
+        const response = { id: id, user: jsonUser2 }
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).send('Failed to create chat');
