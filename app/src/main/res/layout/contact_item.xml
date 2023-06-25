@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".elements.ContactItem">
+    tools:context=".elements.ContactItem"
+    android:background="#D1C3C3">
 
     <ImageView
         android:id="@+id/contact_item_image"
@@ -25,7 +26,7 @@
         android:layout_marginTop="15dp"
         android:text="contact name"
         android:textSize="20sp"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         app:layout_constraintStart_toEndOf="@id/contact_item_image"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,11 +34,12 @@
         android:id="@+id/contact_item_last_message"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:textColor="#FFFFFF"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:text="last message"
+        android:textColor="#000000"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/contact_item_display_name"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,11 +48,10 @@
         android:id="@+id/contact_item_date"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:text="date"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.33"
         app:layout_constraintStart_toEndOf="@id/contact_item_display_name"
         app:layout_constraintTop_toBottomOf="@+id/contact_item_last_message" />
 

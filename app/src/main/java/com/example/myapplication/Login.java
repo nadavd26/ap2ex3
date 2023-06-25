@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.myapplication.api.API;
 import com.example.myapplication.api.User;
@@ -26,7 +27,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        api = new API();
+        api = API.getInstance();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {}
@@ -86,5 +87,12 @@ public class Login extends AppCompatActivity {
             Intent intent = new Intent(this, Register.class);
             startActivity(intent);
         });
+
+        ImageButton settings = findViewById(R.id.login_settings);
+        settings.setOnClickListener(view -> {
+            Intent intent = new Intent(this, Settings.class);
+            startActivity(intent);
+        });
+
     }
 }

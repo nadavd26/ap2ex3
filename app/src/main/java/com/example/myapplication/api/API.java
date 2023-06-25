@@ -1,8 +1,10 @@
 package com.example.myapplication.api;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.example.myapplication.ContactList;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.adapters.ContactItemAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,15 +19,38 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class API {
-    private static final String baseUrl = "http://10.0.2.2:5000/api/";
+    private String baseUrl;
     private WebServiceAPI webServiceAPI;
     private Retrofit retrofit;
-    public API() {
+
+    private static API instance = null;
+    private API() {
+        SharedPreferences sharedPreferences = MainActivity.context.getSharedPreferences("MyPrefs", MainActivity.context.MODE_PRIVATE);
+        baseUrl = sharedPreferences.getString("serverIP", "http://10.0.2.2:5000/api/");
+        if(baseUrl.equals("")){
+            SharedPreferences.Editor editor = MainActivity.context.getSharedPreferences("MyPrefs", MainActivity.context.MODE_PRIVATE).edit();
+            editor.putString("serverIP", "http://10.0.2.2:5000/api/");
+            editor.apply();
+            baseUrl = "http://10.0.2.2:5000/api/";
+        }
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
+    }
+
+    public static API getInstance() {
+        if (instance == null) {
+            instance = new API();
+        }
+
+        return  instance;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        int a =1;
     }
 
     public void register(String username, String password, String displayName, String profilePic, Callback<Void> callback) {

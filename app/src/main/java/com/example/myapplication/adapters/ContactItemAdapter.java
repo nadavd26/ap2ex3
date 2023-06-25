@@ -62,7 +62,7 @@ public class ContactItemAdapter extends BaseAdapter{
         viewHolder.date.setText(contactItem.getDate());
         viewHolder.lastMessage.setText(contactItem.getLastMessage());
         viewHolder.displayName.setText(contactItem.getDisplayName());
-        viewHolder.profilePic.setImageBitmap(contactItem.getProfilePic());
+        viewHolder.profilePic.setImageBitmap(contactItem.getProfilePicBitmap());
 
         return convertView;
     }
