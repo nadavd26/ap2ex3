@@ -50,6 +50,7 @@ public class AddContact extends AppCompatActivity {
                         String displayName = addChat.getUser().getDisplayName();
                         String profilePic = addChat.getUser().getProfilePic();
                         try {
+
                             Thread thread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {

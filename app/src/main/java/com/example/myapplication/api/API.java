@@ -59,6 +59,7 @@ public class API {
     }
 
 
+
     public void getToken(String username, String password, String fireBaseToken, Callback<ResponseBody> callback) {
         Call<ResponseBody> call = webServiceAPI.serverGetToken(new TokenRequestData(username, password, fireBaseToken));
         call.enqueue(callback);

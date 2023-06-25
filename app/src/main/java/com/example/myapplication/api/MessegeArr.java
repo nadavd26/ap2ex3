@@ -10,6 +10,7 @@ public class MessegeArr {
     public MessegeArr() {
     }
 
+
     public MessegeArr(List<MessageServer> messages) {
         this.messages = messages;
     }

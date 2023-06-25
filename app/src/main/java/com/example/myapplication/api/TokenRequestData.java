@@ -12,6 +12,7 @@ public class TokenRequestData {
         this.fireBaseToken = fireBaseToken;
     }
 
+
     public TokenRequestData() {
     }
 

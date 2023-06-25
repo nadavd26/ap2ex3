@@ -12,6 +12,7 @@ public class ContactServer {
         this.lastMessage = lastMessage;
     }
 
+
     public ContactServer() {
     }
 

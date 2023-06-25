@@ -135,6 +135,7 @@ public class Register extends AppCompatActivity {
                         builder.show();
                     } else {
                         Callback<ResponseBody> stringCallback = new Callback<ResponseBody>() {
+
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {

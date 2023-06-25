@@ -70,6 +70,7 @@ public class Messages extends AppCompatActivity {
         }, 100);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

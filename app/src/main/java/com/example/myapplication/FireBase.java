@@ -36,6 +36,7 @@ public class FireBase extends FirebaseMessagingService {
             notificationManager.notify(1, builder.build());
         }
 
+
     }
 
     private void createNotificationChannel(){

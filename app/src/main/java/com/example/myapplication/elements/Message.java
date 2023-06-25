@@ -47,6 +47,7 @@ public class Message {
         return date;
     }
 
+
     public String getContent() {
         return content;
     }

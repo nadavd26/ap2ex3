@@ -20,6 +20,7 @@ public class ContactItem {
     private String displayName;
     private String profilePic;
 
+
     public ContactItem() {
     }
 

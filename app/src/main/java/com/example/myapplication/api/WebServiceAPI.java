@@ -30,6 +30,7 @@ public interface WebServiceAPI {
     @Headers("Content-Type: application/json")
     Call<MessageServer> serverSendMessage(@Path("id") String id, @Body MessageData messageData, @Header("Authorization") String token);
 
+
     @POST("Chats")
     @Headers("Content-Type: application/json")
     Call<AddChat> serverAddChat(@Body ChatData chatData, @Header("Authorization") String token);

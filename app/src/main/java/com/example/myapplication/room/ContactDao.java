@@ -24,6 +24,7 @@ public interface ContactDao {
     @Update
     void update(ContactItem... contactItems);
 
+
     @Delete
     void delete(ContactItem... contactItems);
 

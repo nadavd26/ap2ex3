@@ -80,6 +80,7 @@ public class Login extends AppCompatActivity {
                 }
             };
 
+
             FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, instanceIdResult -> {
                 final String newToken = instanceIdResult.getToken();
                 api.getToken(username, password, newToken, tokenCallback);
