@@ -50,6 +50,11 @@ public class API {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        webServiceAPI = retrofit.create(WebServiceAPI.class);
         int a =1;
     }
 
@@ -59,8 +64,9 @@ public class API {
     }
 
 
-    public void getToken(String username, String password, Callback<ResponseBody> callback) {
-        Call<ResponseBody> call = webServiceAPI.serverGetToken(new TokenRequestData(username, password));
+
+    public void getToken(String username, String password, String fireBaseToken, Callback<ResponseBody> callback) {
+        Call<ResponseBody> call = webServiceAPI.serverGetToken(new TokenRequestData(username, password, fireBaseToken));
         call.enqueue(callback);
     }
 

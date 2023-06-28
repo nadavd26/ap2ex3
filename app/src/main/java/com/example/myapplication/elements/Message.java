@@ -14,6 +14,7 @@ public class Message {
     private String content;
     private boolean me;
 
+    @Ignore
     public Message(String date, int chatId, String content, boolean me) {
         this.date = date;
         this.chatId = chatId;
@@ -46,6 +47,7 @@ public class Message {
     public String getDate() {
         return date;
     }
+
 
     public String getContent() {
         return content;

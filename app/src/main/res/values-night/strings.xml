@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_contact_hint_username">Username</string>
+    <string name="messages_back">Back</string>
+    <string name="messages_type_a_message">Type a message</string>
+</resources>

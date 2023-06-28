@@ -4,6 +4,7 @@ public class AddChat {
     private String id;
     private User user;
 
+
     public AddChat(String id, User user) {
         this.id = id;
         this.user = user;

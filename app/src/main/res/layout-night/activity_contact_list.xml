@@ -15,6 +15,7 @@
         android:background="#202221">
 
         <ImageView
+            android:contentDescription="@string/contact_list_chat_owner"
             android:id="@+id/contact_list_chat_owner_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -29,7 +30,6 @@
             android:id="@+id/contact_item_chat_owner_display_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:layout_marginTop="20dp"
             android:textColor="#FFFFFF"
             app:layout_constraintHorizontal_bias="0.1"
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:contentDescription="Open Settings"
+            android:contentDescription="@string/contact_list_open_settings"
             android:src="@drawable/baseline_settings"
             app:layout_constraintEnd_toStartOf="@+id/logout"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:contentDescription="Logout"
+            android:contentDescription="@string/contact_list_logout"
             android:src="@drawable/baseline_logout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10pt"
-        android:contentDescription="Add Contact"
+        android:contentDescription="@string/contact_list_add_contact"
         android:src="@drawable/baseline_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

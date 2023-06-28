@@ -15,6 +15,7 @@ public class MessageData {
         this.msg = msg;
     }
 
+
     public MessageData() {
     }
 }

@@ -11,7 +11,6 @@ import android.widget.EditText;
 import com.example.myapplication.api.API;
 
 public class Settings extends AppCompatActivity {
-    private AppCompatButton submitButton;
     private AppCompatButton modeButton;
     private EditText ipEt;
     private API api;
@@ -21,7 +20,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         api = API.getInstance();
-        submitButton = findViewById(R.id.settings_submit_button);
+        AppCompatButton submitButton = findViewById(R.id.settings_submit_button);
         modeButton = findViewById(R.id.settings_mode_button);
         ipEt = findViewById(R.id.settings_ip);
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -41,17 +40,17 @@ public class Settings extends AppCompatActivity {
         });
 
         if (mode[0].equals("LIGHT")) {
-            modeButton.setText("Light mode");
+            modeButton.setText(R.string.light_mode);
         } else {
-            modeButton.setText("Dark mode");
+            modeButton.setText(R.string.dark_mode);
         }
         modeButton.setOnClickListener(view -> {
             if (mode[0].equals("LIGHT")) {
                 mode[0] = "DARK";
-                modeButton.setText("Dark mode");
+                modeButton.setText(R.string.dark_mode);
             } else {
                 mode[0] = "LIGHT";
-                modeButton.setText("Light mode");
+                modeButton.setText(R.string.light_mode);
            }
             editor.apply();
         });

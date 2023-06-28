@@ -13,6 +13,7 @@ public class AccountData {
         this.profilePic = profilePic;
     }
 
+
     public AccountData() {
     }
 

@@ -11,6 +11,7 @@ public class LastMessage {
         this.content = content;
     }
 
+
     public LastMessage() {
     }
 

@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -13,14 +14,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.widget.ImageView;
 
 import com.example.myapplication.api.API;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,21 +53,13 @@ public class Register extends AppCompatActivity {
             startActivity(intent);
         });
 
-        BSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageChooser();
-            }
-        });
+        BSelectImage.setOnClickListener(v -> imageChooser());
 
         AppCompatButton registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(view -> {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // Do something when the Cancel button is clicked
-                }
-            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> {});
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             if (!checkUsername()) {
                 builder.setTitle("Username Error");
@@ -98,8 +90,8 @@ public class Register extends AppCompatActivity {
             }
 
             //check profile pic
-            String profilePicBase64 = "";
-            Bitmap resizedBitmap = null;
+            String profilePicBase64;
+            Bitmap resizedBitmap;
             try {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 Bitmap bm = ((BitmapDrawable) IVPreviewImage.getDrawable()).getBitmap();
@@ -114,7 +106,6 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-
             EditText usernameEt = findViewById(R.id.register_username_edittext);
             String username = usernameEt.getText().toString();
             EditText passwordEt = findViewById(R.id.register_password_edittext);
@@ -125,16 +116,18 @@ public class Register extends AppCompatActivity {
             Intent intent = new Intent(this, ContactList.class);
             Callback<Void> callback = new Callback<Void>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+                public void onResponse(@NonNull Call<Void> call, Response<Void> response) {
                     if (response.code() == 409) {
                         builder.setTitle("Register Error");
                         builder.setMessage("User already registered");
                         builder.show();
                     } else {
                         Callback<ResponseBody> stringCallback = new Callback<ResponseBody>() {
+
                             @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                                 try {
+                                    assert response.body() != null;
                                     String token = response.body().string();
                                     intent.putExtra("username", username);
                                     intent.putExtra("token", token);
@@ -143,22 +136,24 @@ public class Register extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                                 catch (Exception e) {
-
+                                    e.printStackTrace();
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                int a = 1;
+                            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                                t.printStackTrace();
                             }
                         };
-
-                        api.getToken(username, password, stringCallback);
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Register.this, instanceIdResult -> {
+                            final String newToken = instanceIdResult.getToken();
+                            api.getToken(username, password, newToken, stringCallback);
+                        });
                     }
                 }
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    int a = 1;
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    t.printStackTrace();
                 }
             };
             api.register(username, password, displayName, profilePicBase64, callback);
@@ -218,8 +213,7 @@ public class Register extends AppCompatActivity {
         EditText usernameEt = findViewById(R.id.register_username_edittext);
         String username = usernameEt.getText().toString();
         String regex = ".*[a-zA-Z].*";
-        boolean hasEnglishChar = username.matches(regex);
-        return hasEnglishChar;
+        return username.matches(regex);
     }
 
     private boolean checkPassword() {

@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="light_mode">Light mode</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="add_contact_hint_username">Username</string>
+    <string name="contact_list_chat_owner_image">Chat owner Image</string>
+    <string name="contact_list_open_settings">Open Settings</string>
+    <string name="contact_list_logout">Logout</string>
+    <string name="contact_list_add_contact">Add Contact</string>
+    <string name="contact_list_chat_owner">Chat Owner</string>
+    <string name="login_open_settings">Open Settings</string>
+    <string name="login_welcome">WELCOME</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_login">Login</string>
+    <string name="login_click_here_to_register">Click here to register</string>
+    <string name="messages_back">Back</string>
+    <string name="messages_type_a_message">Type a message</string>
+    <string name="messages_send">Send</string>
+    <string name="register_welcome">WELCOME</string>
+    <string name="register_username">Username</string>
+    <string name="register_password">Password</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_display_name">Display Name</string>
+    <string name="register_select_image">SELECT IMAGE</string>
+    <string name="register_preview_profile_image">preview profile image</string>
+    <string name="register_register">Register</string>
+    <string name="register_click_here_to_login">Click here to login</string>
+    <string name="settings_default_ip">http://10.0.2.2:5000/api/</string>
+    <string name="settings_server_ip">Server ip</string>
+    <string name="settings_submit">Submit</string>
+    <string name="settings_light_mode">Light Mode</string>
+    <string name="contact_item_contact_view">Contact View</string>
+    <string name="contact_item_contact_name">contact name</string>
+    <string name="contact_item_last_message">last message</string>
+    <string name="contact_item_date">date</string>
 </resources>

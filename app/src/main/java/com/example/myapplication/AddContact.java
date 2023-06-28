@@ -50,6 +50,7 @@ public class AddContact extends AppCompatActivity {
                         String displayName = addChat.getUser().getDisplayName();
                         String profilePic = addChat.getUser().getProfilePic();
                         try {
+
                             Thread thread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -74,8 +75,12 @@ public class AddContact extends AppCompatActivity {
                             }
                         });
                         builder.setIcon(android.R.drawable.ic_dialog_alert);
-                        builder.setTitle("Login Error");
-                        builder.setMessage("User not registered");
+                        builder.setTitle("Add Contact Error");
+                        if (owner.equals(username)) {
+                            builder.setMessage("Cannot add yourself");
+                        } else {
+                            builder.setMessage("User not registered");
+                        }
                         builder.show();
                     }
                 }

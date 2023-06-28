@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#293B9F"
-            android:text="Back"
+            android:text="@string/messages_back"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
@@ -46,7 +46,7 @@
             android:background="#FFFFFF"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="Type a message"
+            android:hint="@string/messages_type_a_message"
             android:textColor="#000000" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#115305"
-            android:text="Send"
+            android:text="@string/messages_send"
             android:textColor="#FFFFFF" />
 
     </LinearLayout>
