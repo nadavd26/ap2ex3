@@ -2,6 +2,7 @@ package com.example.myapplication.elements;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ public class ContactItem {
     public ContactItem() {
     }
 
+    @Ignore
     public ContactItem(int id, String date, String lastMessage, String displayName, String profilePic) {
         this.date = date;
         this.id = id;
