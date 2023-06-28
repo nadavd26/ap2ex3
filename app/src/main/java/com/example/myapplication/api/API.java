@@ -50,6 +50,11 @@ public class API {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        webServiceAPI = retrofit.create(WebServiceAPI.class);
         int a =1;
     }
 
