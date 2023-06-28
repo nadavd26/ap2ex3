@@ -8,16 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.widget.ListView;
-
-import com.example.myapplication.adapters.MessageAdapter;
-import com.example.myapplication.api.API;
-import com.example.myapplication.elements.Message;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
+
     public static Context context;
     SharedPreferences.Editor editor;
     SharedPreferences sharedPreferences;
@@ -43,6 +35,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int a;
     }
 }

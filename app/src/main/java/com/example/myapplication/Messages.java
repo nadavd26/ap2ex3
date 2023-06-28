@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.room.Room;
 
-import android.content.Intent;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -34,16 +34,17 @@ public class Messages extends AppCompatActivity {
 
     private int chatId;
 
-    private AppDB db;
-
     private ContactDao contactDao;
 
     private MessageDao messageDao;
 
     private String goodLookingDate(String serverDate) {
         String date1 = serverDate.substring(0, 10);
-        String date2 = serverDate.substring(11, 16);
-        return  date1 + " " + date2 ;
+        String date2 = serverDate.substring(11, 13);
+        int i = Integer.parseInt(date2);
+        i = (i + 3) % 24;
+        String date3 = serverDate.substring(13, 16);
+        return  date1 + " " + i + date3 ;
     }
 
     private List<Message> serverMessagesToMessages(List<MessageServer> messageServerList, String username) {
@@ -51,7 +52,6 @@ public class Messages extends AppCompatActivity {
         for (int i = messageServerList.size() - 1; i >= 0; i--) {
             MessageServer messageServer = messageServerList.get(i);
             boolean me = messageServer.getSender().getUsername().equals(username);
-            String id = messageServer.getId();
             Message message = new Message(goodLookingDate(messageServer.getCreated()),
                     chatId,
                     messageServer.getContent(),
@@ -62,12 +62,7 @@ public class Messages extends AppCompatActivity {
     }
 
     private void scrollDown() {
-        messagesList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                messagesList.setSelection(messageAdapter.getCount() - 1);
-            }
-        }, 100);
+        messagesList.postDelayed(() -> messagesList.setSelection(messageAdapter.getCount() - 1), 100);
     }
 
 
@@ -85,57 +80,57 @@ public class Messages extends AppCompatActivity {
         messageAdapter = new MessageAdapter(messages);
         messagesList.setAdapter(messageAdapter);
         scrollDown();
-        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, username)
+        AppDB db = Room.databaseBuilder(getApplicationContext(), AppDB.class, username)
                 .build();
         messageDao = db.messageDao();
         contactDao = db.contactDao();
+        FireBase fireBase = FireBase.getInstance();
+        fireBase.setContactDao(contactDao);
+        fireBase.setMessageAdapter(messageAdapter);
+        fireBase.setMessageDao(db.messageDao());
+        fireBase.setMessages(messages);
+        fireBase.setMessagesList(messagesList);
+        fireBase.setChatID(chatId);
+        fireBase.setInMessages(true);
         Callback<List<MessageServer>> messagesServerCallback = new Callback<List<MessageServer>>() {
             @Override
-            public void onResponse(Call<List<MessageServer>> call, Response<List<MessageServer>> response) {
+            public void onResponse(@NonNull Call<List<MessageServer>> call, Response<List<MessageServer>> response) {
                 messages.clear();
+                assert response.body() != null;
                 List<Message> messageList = serverMessagesToMessages(response.body(), username);
                 messages.addAll(messageList);
                 messageAdapter.notifyDataSetChanged();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Message> daoIndex = messageDao.index();
-                        for (Message message:daoIndex) {
-                            if (message.getChatId() == chatId) {
-                                    messageDao.delete(message);
-                            }
+                new Thread(() -> {
+                    List<Message> daoIndex = messageDao.index();
+                    for (Message message:daoIndex) {
+                        if (message.getChatId() == chatId) {
+                                messageDao.delete(message);
                         }
+                    }
 
-                        for (Message message: messageList) {
-                            messageDao.insert(message);
-                        }
+                    for (Message message: messageList) {
+                        messageDao.insert(message);
                     }
                 }).start();
             }
 
             @Override
-            public void onFailure(Call<List<MessageServer>> call, Throwable t) {
-                int a = 1;
+            public void onFailure(@NonNull Call<List<MessageServer>> call, @NonNull Throwable t) {
+                t.printStackTrace();
             }
         };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Message> updatedMessages = messageDao.getMessageList(chatId);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        messages.clear();
-                        messages.addAll(updatedMessages);
-                        messageAdapter.notifyDataSetChanged();
-                    }
-                });
+        new Thread(() -> {
+            List<Message> updatedMessages = messageDao.getMessageList(chatId);
+            runOnUiThread(() -> {
+                messages.clear();
+                messages.addAll(updatedMessages);
+                messageAdapter.notifyDataSetChanged();
+            });
 
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {}
-                api.getMessages(token, String.valueOf(chatId), messagesServerCallback);
-            }
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {e.printStackTrace();}
+            api.getMessages(token, String.valueOf(chatId), messagesServerCallback);
         }).start();
         AppCompatButton sendButton = findViewById(R.id.messages_button_send);
         sendButton.setOnClickListener(view -> {
@@ -146,28 +141,26 @@ public class Messages extends AppCompatActivity {
 
             Callback<MessageServer> sendMessageCallback = new Callback<MessageServer>() {
                 @Override
-                public void onResponse(Call<MessageServer> call, Response<MessageServer> response) {
+                public void onResponse(@NonNull Call<MessageServer> call, Response<MessageServer> response) {
+                    assert response.body() != null;
                     Message message = new Message(goodLookingDate(response.body().getCreated()),
                             chatId,
                             response.body().getContent(),
                             true);
                     messages.add(message);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            messageDao.insert(message);
-                            List<ContactItem> currentContact = contactDao.index();
-                            //find contact of chatId
-                            ContactItem currentContactItem = new ContactItem();
-                            for (ContactItem contactItem : currentContact) {
-                                if (contactItem.getId() == chatId) {
-                                    currentContactItem = contactItem;
-                                }
+                    new Thread(() -> {
+                        messageDao.insert(message);
+                        List<ContactItem> currentContact = contactDao.index();
+                        //find contact of chatId
+                        ContactItem currentContactItem = new ContactItem();
+                        for (ContactItem contactItem : currentContact) {
+                            if (contactItem.getId() == chatId) {
+                                currentContactItem = contactItem;
                             }
-                            currentContactItem.setLastMessage(message.getContent());
-                            currentContactItem.setDate(message.getDate());
-                            contactDao.update(currentContactItem);
                         }
+                        currentContactItem.setLastMessage(message.getContent());
+                        currentContactItem.setDate(message.getDate());
+                        contactDao.update(currentContactItem);
                     }).start();
                     messageAdapter.notifyDataSetChanged();
                     scrollDown();
@@ -175,16 +168,16 @@ public class Messages extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MessageServer> call, Throwable t) {}
+                public void onFailure(@NonNull Call<MessageServer> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
             };
             api.sendMessage(token, String.valueOf(chatId), et.getText().toString(), sendMessageCallback);
             et.setText("");
         });
 
             AppCompatButton logoutButton = findViewById(R.id.messages_button_back_to_contact_list);
-            logoutButton.setOnClickListener(view -> {
-            finish();
-        });
+            logoutButton.setOnClickListener(view -> finish());
     }
 
     @Override

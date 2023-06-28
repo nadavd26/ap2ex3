@@ -1,13 +1,25 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.room.Room;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Base64;
 import android.view.View;
@@ -24,6 +36,9 @@ import com.example.myapplication.elements.ContactItem;
 import com.example.myapplication.room.AppDB;
 import com.example.myapplication.room.ContactDao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -46,7 +61,11 @@ public class ContactList extends AppCompatActivity {
 
     private AppDB db;
 
+    private FireBase fireBase;
+
     private ContactDao contactDao;
+
+    private boolean isOn = false;
     ImageView chatOwnerProfilePic;
 
     TextView chatOwnerDisplayName;
@@ -57,8 +76,11 @@ public class ContactList extends AppCompatActivity {
 
     private String goodLookingDate(String serverDate) {
         String date1 = serverDate.substring(0, 10);
-        String date2 = serverDate.substring(11, 16);
-        return  date1 + " " + date2 ;
+        String date2 = serverDate.substring(11, 13);
+        Integer i = Integer.parseInt(date2);
+        i = (i + 3) % 24;
+        String date3 = serverDate.substring(13, 16);
+        return  date1 + " " + i + date3 ;
     }
     private List<ContactItem> convertToContactItemList(List<ContactServer> contactServers) {
         List<ContactItem> contactItems = new ArrayList<ContactItem>();
@@ -104,17 +126,28 @@ public class ContactList extends AppCompatActivity {
         chatOwnerDisplayName = findViewById(R.id.contact_item_chat_owner_display_name);
         chatOwnerDisplayName.setText(displayName);
         ImageButton logout = findViewById(R.id.logout);
+        SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+        editor.putBoolean("isOn", true);
+        editor.apply();
         logout.setOnClickListener( l -> {
             finish();
         });
 
-
-
+        fireBase = FireBase.getInstance();
+        fireBase.setContactDao(contactDao);
+        fireBase.setContactItemAdapter(contactAdapter);
+        fireBase.setMessageDao(db.messageDao());
+        fireBase.setContacts(contacts);
+        fireBase.setUsername(username);
+        fireBase.setInMessages(false);
         contactsCallback = new Callback<List<ContactServer>>() {
             @Override
             public void onResponse(Call<List<ContactServer>> call, Response<List<ContactServer>> response) {
                 contacts.clear();
                 List<ContactItem> contactItems = convertToContactItemList(response.body());
+                for( ContactItem updatedContact : contactItems) {
+                    updatedContact.setLastMessage(FireBase.beautifulLastMessage(updatedContact.getLastMessage()));
+                }
                 contacts.addAll(contactItems);
                 contactAdapter.notifyDataSetChanged();
                 new Thread(new Runnable() {
@@ -143,6 +176,9 @@ public class ContactList extends AppCompatActivity {
                     @Override
                     public void run() {
                         contacts.clear();
+                        for( ContactItem updatedContact : updatedContacts) {
+                            updatedContact.setLastMessage(FireBase.beautifulLastMessage(updatedContact.getLastMessage()));
+                        }
                         contacts.addAll(updatedContacts);
                         contactAdapter.notifyDataSetChanged();
                     }
@@ -180,6 +216,7 @@ public class ContactList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        fireBase.setInMessages(false);
         // Define a Handler instance
         new Thread(new Runnable() {
             @Override
@@ -189,6 +226,9 @@ public class ContactList extends AppCompatActivity {
                     @Override
                     public void run() {
                         contacts.clear();
+                        for( ContactItem updatedContact : updatedContacts) {
+                            updatedContact.setLastMessage(FireBase.beautifulLastMessage(updatedContact.getLastMessage()));
+                        }
                         contacts.addAll(updatedContacts);
                         contactAdapter.notifyDataSetChanged();
                     }

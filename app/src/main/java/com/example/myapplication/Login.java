@@ -1,14 +1,14 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -28,11 +28,12 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+        editor.putBoolean("isOn", false);
+        editor.apply();
         api = API.getInstance();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {}
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> {});
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         AppCompatButton loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(view -> {
@@ -43,7 +44,7 @@ public class Login extends AppCompatActivity {
             Intent intent = new Intent(this, ContactList.class);
             Callback<ResponseBody> tokenCallback = new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     try {
                         if (response.code() == 401 || response.code() == 404) {
                             builder.setTitle("Login Error");
@@ -51,10 +52,12 @@ public class Login extends AppCompatActivity {
                             builder.show();
                             return;
                         }
+                        assert response.body() != null;
                         String token = response.body().string();
                         Callback<User> userCallback = new Callback<User>() {
                             @Override
-                            public void onResponse(Call<User> call, Response<User> response) {
+                            public void onResponse(@NonNull Call<User> call, Response<User> response) {
+                                assert response.body() != null;
                                 String displayName = response.body().getDisplayName();
                                 String profilePic = response.body().getProfilePic();
                                 intent.putExtra("username", username);
@@ -65,18 +68,18 @@ public class Login extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<User> call, Throwable t) {
-                                int a = 1;
+                            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                                t.printStackTrace();
                             }
 
                         };
                         api.getUsernameInfo(token, username, userCallback);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {e.printStackTrace();}
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    int a = 1;
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    t.printStackTrace();
                 }
             };
 
@@ -99,5 +102,13 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+        editor.putBoolean("isOn", false);
+        editor.apply();
     }
 }

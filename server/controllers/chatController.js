@@ -37,8 +37,7 @@ function usersSocketsRemove(socket) {
     }
 }
 
-async function sendToFireBase(reciever, sender, message, chatID) {
-    console.log("1");
+async function sendToFireBase(reciever, sender, message, chatID, created, profilePic) {
     const recieverUser = await User.findOne({ username: reciever });
     const fireBaseToken = recieverUser.fireBaseToken;
     if (fireBaseToken === "") {
@@ -52,14 +51,16 @@ async function sendToFireBase(reciever, sender, message, chatID) {
         },
         token: fireBaseToken,
         data: {
-            chatID: chatID
+            chatID: chatID,
+            created: created,
+            username: reciever,
+            profilePic: profilePic
         }
     };
-    console.log(fireBaseMessage)
     admin
         .messaging()
         .send(fireBaseMessage)
-        .then((response) => {console.log(response)})
+        .then((response) => {})
         .catch((error) => {
             console.log(error)
         });
@@ -90,7 +91,6 @@ function getNextMessageId(messages) {
 }
 
 async function createMessage(req, res) {
-    console.log("create")
     if (!(req.body.hasOwnProperty('msg') &&
         req.params.hasOwnProperty('id'))) {
         return res.status(400).json({ title: 'One or more validation errors occurred.' });
@@ -132,12 +132,12 @@ async function createMessage(req, res) {
     const recieverSocket = userEntry ? userEntry.socket : null;
     if (recieverSocket === null) {
         //the reciever is not connected
-        const resu = await sendToFireBase(reciever_username, jsonSender.username, msg, id)
+        const resu = await sendToFireBase(reciever_username, jsonSender.displayName, msg, id, updatedChat.messages[messageId].created.toISOString(), sender.profilePic)
         return res.status(200).json(updatedChat.messages[messageId]);
     }
 
     io.to(recieverSocket.id).emit('message', { "sender": sender.username, "id": id })
-    const resu = await sendToFireBase(reciever_username, jsonSender.username, msg, id)
+    const resu = await sendToFireBase(reciever_username, jsonSender.displayName, msg, id, updatedChat.messages[messageId].created.toISOString(), sender.profilePic)
     return res.status(200).json(updatedChat.messages[messageId]);
 }
 
