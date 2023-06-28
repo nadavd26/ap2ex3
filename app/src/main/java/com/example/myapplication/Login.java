@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -48,7 +50,7 @@ public class Login extends AppCompatActivity {
                     try {
                         if (response.code() == 401 || response.code() == 404) {
                             builder.setTitle("Login Error");
-                            builder.setMessage("User not registered");
+                            builder.setMessage("Wrong username or/and password");
                             builder.show();
                             return;
                         }

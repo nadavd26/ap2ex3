@@ -183,10 +183,6 @@ public class ContactList extends AppCompatActivity {
                         contactAdapter.notifyDataSetChanged();
                     }
                 });
-
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {}
                 api.getContactList(token, contactsCallback);
             }
         }).start();

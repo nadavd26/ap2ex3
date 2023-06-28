@@ -24,6 +24,8 @@ async function createToken(req, res) {
         if(req.body.hasOwnProperty("fireBaseToken")){
             const resp = await User.updateOne({ username: username }, { $set: { fireBaseToken: req.body.fireBaseToken } });
             // console.log(resp)
+        } else {
+            const resp = await User.updateOne({ username: username }, { $set: { fireBaseToken: "" } });
         }
         return res.status(200).json(token);
     } catch (error) {

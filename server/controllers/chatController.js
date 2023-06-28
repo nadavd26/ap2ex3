@@ -130,13 +130,11 @@ async function createMessage(req, res) {
     }
     const userEntry = users_sockets.find((user) => user.username === reciever_username);
     const recieverSocket = userEntry ? userEntry.socket : null;
-    if (recieverSocket === null) {
+    if (!(recieverSocket === null)) {
         //the reciever is not connected
-        const resu = await sendToFireBase(reciever_username, jsonSender.displayName, msg, id, updatedChat.messages[messageId].created.toISOString(), sender.profilePic)
-        return res.status(200).json(updatedChat.messages[messageId]);
+        io.to(recieverSocket.id).emit('message', { "sender": sender.username, "id": id })
     }
-
-    io.to(recieverSocket.id).emit('message', { "sender": sender.username, "id": id })
+    
     const resu = await sendToFireBase(reciever_username, jsonSender.displayName, msg, id, updatedChat.messages[messageId].created.toISOString(), sender.profilePic)
     return res.status(200).json(updatedChat.messages[messageId]);
 }

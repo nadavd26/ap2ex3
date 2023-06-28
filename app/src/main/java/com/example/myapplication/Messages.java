@@ -126,10 +126,6 @@ public class Messages extends AppCompatActivity {
                 messages.addAll(updatedMessages);
                 messageAdapter.notifyDataSetChanged();
             });
-
-            try {
-                Thread.sleep(2000);
-            } catch (Exception e) {e.printStackTrace();}
             api.getMessages(token, String.valueOf(chatId), messagesServerCallback);
         }).start();
         AppCompatButton sendButton = findViewById(R.id.messages_button_send);

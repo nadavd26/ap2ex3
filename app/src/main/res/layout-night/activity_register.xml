@@ -25,61 +25,69 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="32dp"
-            android:text="WELCOME"
+            android:text="@string/register_welcome"
             android:textColor="#FFFFFF"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/register_username_edittext"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:background="@drawable/dark_login_border_xml"
             android:backgroundTint="#FFFFFF"
-            android:hint="Username"
+            android:hint="@string/register_username"
             android:inputType="text"
             android:padding="12dp"
             android:textColor="#000000"
             android:textColorHint="#000000"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/register_password_edittext"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:background="@drawable/dark_login_border_xml"
             android:backgroundTint="#FFFFFF"
-            android:hint="Password"
+            android:hint="@string/register_password"
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#000000"
             android:textColorHint="#000000"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/register_confirm_password_edittext"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:background="@drawable/dark_login_border_xml"
             android:backgroundTint="#FFFFFF"
-            android:hint="Confirm Password"
+            android:hint="@string/register_confirm_password"
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#000000"
             android:textColorHint="#000000"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/register_display_name_edittext"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:background="@drawable/dark_login_border_xml"
             android:backgroundTint="#FFFFFF"
-            android:hint="Display Name"
+            android:hint="@string/register_display_name"
             android:inputType="text"
             android:padding="12dp"
             android:textColor="#000000"
@@ -90,19 +98,22 @@
         <Button
             android:id="@+id/register_select_image"
             android:layout_width="wrap_content"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
             android:backgroundTint="#000000"
-            android:text="SELECT IMAGE"
+            android:text="@string/register_select_image"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
         <!--ImageView to preview the selected image-->
         <ImageView
             android:id="@+id/register_iv_preview_image"
+            android:contentDescription="@string/register_preview_profile_image"
             android:layout_width="125dp"
             android:layout_height="125dp"
+            android:layout_gravity="center_horizontal"
             android:layout_below="@id/register_select_image"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -112,6 +123,7 @@
             android:id="@+id/register_button"
             android:layout_width="200dp"
             android:layout_height="50dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/dark_login_button_background"
             android:padding="8dp"

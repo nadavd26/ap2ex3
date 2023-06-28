@@ -29,7 +29,6 @@ public class Settings extends AppCompatActivity {
         final String[] mode = {sharedPreferences.getString("mode", "LIGHT")};
         ipEt.setText(baseUrl);
         submitButton.setOnClickListener(view -> {
-
             String updatedServerUrl = ipEt.getText().toString();
             editor.putString("serverIP", updatedServerUrl);
             editor.putString("mode", mode[0]);

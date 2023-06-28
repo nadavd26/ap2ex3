@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:contentDescription="Open Settings"
+        android:contentDescription="@string/login_open_settings"
         android:src="@drawable/baseline_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,39 +34,43 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="32dp"
-            android:text="WELCOME"
+            android:text="@string/login_welcome"
             android:textColor="#FFFFFF"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <EditText
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:id="@+id/login_username_edittext"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:backgroundTint="#FFFFFF"
             android:background="@drawable/dark_login_border_xml"
-            android:hint="Username"
+            android:hint="@string/login_username"
             android:inputType="text"
             android:padding="12dp"
             android:textColor="#000000"
             android:textColorHint="#000000"
-            android:textSize="24dp"
+            android:textSize="24sp"
             />
 
         <EditText
+            android:layout_width="400dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:id="@+id/login_password_edittext"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:backgroundTint="#FFFFFF"
             android:background="@drawable/dark_login_border_xml"
-            android:hint="Password"
+            android:hint="@string/login_password"
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#000000"
             android:textColorHint="#000000"
-            android:textSize="24dp"
+            android:textSize="24sp"
             />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -76,7 +80,7 @@
             android:layout_height="50dp"
             android:background="@drawable/dark_login_button_background"
             android:padding="8dp"
-            android:text="Login"
+            android:text="@string/login_login"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             />
@@ -87,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
-            android:text="Click here to register"
+            android:text="@string/login_click_here_to_register"
             android:textColor="#FFFFFF"
             android:background="@android:color/transparent"/>
 
