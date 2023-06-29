@@ -15,11 +15,9 @@ node server.js the server runs at port 5000, so if you want to use the web versi
 
 To run the android application
 open the project directory using android studio:
-open android studio
-click on file at the top left of the android studio window
-click on open
-browse our project to open it
-then, you need to run the project by clicking the green triangle points right (or run it in an other way).
+open android studio -> new project from version control -> write in url the url in details.txt.
+then, you need to run the project:
+choose the emulator you want to run it and run it by clicking the green triangle points right (or run it in an other way).
 
 NOTE: if you want to get notiflications to your android device, you need to give our app a notiflication permission,
 you can do it in the settings of your android device.
